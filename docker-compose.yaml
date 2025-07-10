@@ -1,0 +1,25 @@
+# docker-compose.yml
+version: "3.9"
+
+services:
+  api:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:7-jammy
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGODB_DB}
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/init.js:ro
+
+  redis:
+    image: redis:7-alpine
